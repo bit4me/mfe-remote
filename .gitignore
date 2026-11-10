@@ -1,0 +1,18 @@
+# OS 관련 파일
+.DS_Store
+Thumbs.db
+
+# Local gitmessage template (managed globally)
+.gitmessage.txt
+
+# VS Code 관련 설정 (개인 설정이 팀원과 꼬이는 것 방지)
+.vscode/
+!.vscode/extensions.json  # 단, 추천 익스텐션 목록은 공유하기 위해 제외
+
+.env
+.env.*
+
+bk*
+
+gitignore
+node_modules
