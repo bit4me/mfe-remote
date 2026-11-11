@@ -1,0 +1,22 @@
+name: mfe-framework
+
+services:
+  mfe-remote:
+
+    env_file:
+    - .env.dev
+
+    volumes:
+      # [중요] 호스트 PC의 프로젝트 루트(my-project)를 컨테이너 내부의 /workspace로 연결
+      # 프로젝트 루트 전체를 마운트하여 프론트/인프라 폴더에 접근 가능하게 함
+      - ../:/workspaces/mfe-framework/mfe-remote:cached
+      
+      # ... 기존 볼륨 설정들 ...
+      # Host(WSL)의 SSH 소켓 경로를 컨테이너 내부의 /ssh-agent로 바인딩
+      - ${SSH_AUTH_SOCK}:/ssh-agent
+      
+      - mfe-remote_node_modules:/workspaces/mfe-framework/mfe-remote/node_modules
+
+# Docker가 관리하는 명명된 볼륨 정의
+volumes:
+  mfe-remote_node_modules:
