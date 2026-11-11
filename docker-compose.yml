@@ -1,0 +1,26 @@
+name: mfe-framework
+
+services:
+  mfe-remote:
+    # 빌드한 이미지에 지정할 이름과 태그: 로컬 개발용 이미지임을 구분하기 위해 local 태그 사용
+    image: node:24-alpine
+
+    #env_file:
+    #  - ../.env
+    ##container_name: kstock-frontend${ENV_SUFFIX}
+
+    ports:
+    - "5001:5001"
+      #- "3000:3000"     # React 기본 개발 서버 포트
+      
+    #depends_on:
+    #  backend:
+    #    condition: service_healthy
+    
+    restart: unless-stopped
+
+    working_dir: /workspaces/mfe-framework/mfe-remote
+
+    environment:
+      NODE_ENV: development
+      #NEXT_PUBLIC_API_BASE_URL: http://192.168.0.8:8001

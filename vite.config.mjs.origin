@@ -1,0 +1,105 @@
+//import { defineConfig, loadEnv } from 'vite';
+//
+////import { defineConfig } from 'vite';
+//
+//import react from '@vitejs/plugin-react';
+//import { federation } from '@module-federation/vite';
+//
+//import tailwindcss from '@tailwindcss/vite';
+//import mf from './federation/federation.config.js';
+//
+//const origin =
+//  process.env.REMOTE_ORIGIN || 'http://localhost:5001';
+//
+//export default defineConfig({
+//  base: `${origin}/`,
+//
+//  plugins: [
+//    react(),
+//    tailwindcss(),
+//
+//    federation({
+//      name: mf.name,
+//      filename: mf.filename,
+//      manifest: true,
+//      exposes: mf.exposes,
+//      shared: mf.shared,
+//      dts: false
+//    })
+//  ],
+//
+//  server: {
+//    host: '0.0.0.0',
+//    port: 5001,
+//    strictPort: true,
+//    cors: true,
+//    origin
+//  },
+//
+//  preview: {
+//    host: '0.0.0.0',
+//    port: 5001,
+//    cors: true
+//  },
+//
+//  build: {
+//    target: 'chrome89'
+//  }
+//});
+
+
+
+import { defineConfig, loadEnv } from 'vite';
+import react from '@vitejs/plugin-react';
+import { federation } from '@module-federation/vite';
+import { createRequire } from 'node:module';
+
+const require = createRequire(import.meta.url);
+
+const mf = require('./federation/federation.config.js');
+
+export default defineConfig(({ mode }) => {
+  const env = loadEnv(mode, process.cwd(), '');
+
+  console.log('[Vite Federation]');
+  console.log('APP_NAME:', env.APP_NAME);
+  console.log('APP_PORT:', env.APP_PORT);
+  console.log('REMOTE_FORMAT:', env.REMOTE_FORMAT);
+
+  return {
+    base: '/',
+
+    server: {
+      host: '0.0.0.0',
+      port: Number(env.APP_PORT || 5001),
+      cors: true
+    },
+
+    plugins: [
+      react(),
+
+      federation({
+        name: env.APP_NAME || 'remote_app',
+        filename: 'remoteEntry.js',
+        manifest: true,
+
+        exposes: {
+          './Button': './src/Button.jsx'
+        },
+
+        shared: {
+          react: {
+            singleton: true,
+            requiredVersion: env.REACT_VERSION || '^19.0.0'
+          },
+          'react-dom': {
+            singleton: true,
+            requiredVersion: env.REACT_DOM_VERSION || '^19.0.0'
+          }
+        },
+
+        dts: false
+      })
+    ]
+  };
+});
