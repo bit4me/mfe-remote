@@ -9,6 +9,9 @@ Thumbs.db
 .vscode/
 !.vscode/extensions.json  # 단, 추천 익스텐션 목록은 공유하기 위해 제외
 
+# Module Federation 관련 진단 결과
+.mf/
+
 .env
 .env.*
 
