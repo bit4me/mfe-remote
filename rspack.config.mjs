@@ -38,6 +38,7 @@ export default async (rspackEnv = {}, argv = {}) => {
     // 4. Remote 번들 형식 결정
     //const isModule = mf.library.type === 'module';
     const isModule = mf.env.remoteFormat === 'module';
+    const isDevelopment = mode === 'development'
 
     console.log('[Rspack] Remote Configuration:', {
         mode,
@@ -50,8 +51,13 @@ export default async (rspackEnv = {}, argv = {}) => {
     return {
         mode,
 
-        // Entry
-        entry: './src/main.jsx',
+        // 번들러 진입점.
+        //entry: {}, //<-- 독립 실행용 entry 없음.
+        entry: {
+            //app: './src/main.jsx',                                //  <-- 02-02 용
+
+            //app: './src/main.jsx',                                //  <-- 03-02 용: 버튼 나옴
+        },
 
         // Output
         output: {
@@ -80,7 +86,7 @@ export default async (rspackEnv = {}, argv = {}) => {
 
         // Resolve
         resolve: {
-            extensions: ['.js', '.jsx']
+            extensions: ['.tsx', '.ts', '.jsx', '.js']
         },
 
         // Module Rules
@@ -98,11 +104,37 @@ export default async (rspackEnv = {}, argv = {}) => {
                             },
                             transform: {
                                 react: {
-                                    runtime: 'automatic'
+                                    runtime: 'automatic',
+                                    development: isDevelopment,
                                 }
                             }
                         }
                     }
+                },
+                // TypeScript / TSX
+                {
+                    //test: /\.(j|t)sx?$/,
+                    test: /\.tsx?$/,
+                    exclude: /node_modules/,
+                    loader: 'builtin:swc-loader',
+
+                    options: {
+                        jsc: {
+                            parser: {
+                                syntax: 'typescript',
+                                tsx: true,
+                            },
+
+                            transform: {
+                                react: {
+                                    runtime: 'automatic',
+                                    development: isDevelopment,
+                                },
+                            },
+
+                            target: 'es2020',
+                        },
+                    },
                 },
                 {
                     test: /\.css$/,

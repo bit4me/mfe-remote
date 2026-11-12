@@ -1,6 +1,11 @@
 export default Object.freeze({
-    './Button': './src/components/ui/Button.tsx',
+    //  01-02 설정
+    './Button': './src/components/Button.tsx',
     './ThemeInjector': './src/components/ThemeInjector.tsx',
-    //'./Button': './src/components/ui/Button',
-    //'./ThemeInjector': './src/components/ThemeInjector',
+
+    //  02-02 설정
+    //'./Button': './src/components/Button.jsx',
+
+    //  03-02 설정
+    //'./Button': './src/components/Button.jsx',
 });

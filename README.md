@@ -24,28 +24,55 @@
     ```text
 
     my-project/
-    ├── package.json
+    │
+    ├── build/
+    │   ├── paths.mjs
+    │   └── shared.config.mjs
+    │
     ├── src/
-    │   ├── index.js
+    │   ├── components/
+    │   │   └── Button.tsx
+    │   │
+    │   ├── styles/
+    │   │   └── theme.ts
+    │   │
     │   ├── routes/
     │   │   └── user.js
+    │   │
     │   ├── services/
     │   │   └── userService.js
-    │   └── utils/
-    │       └── logger.js
-    └── tests/
-        └── user.test.js
-
+    │   │
+    │   ├── utils/
+    │   │   └── logger.js
+    │   │
+    │   ├── App.tsx
+    │   └── index.tsx         <-- 번들러 공통 진입점
+    │
+    ├── tests/
+    │    └── user.test.js
+    │
+    ├── index.html
+    ├── package.json
+    ├── tsconfig.json
+    │
+    ├── rspack.config.mjs
+    ├── vite.config.mjs
+    └── webpack.config.mjs
     ```
 
-  - ESM 방식 사용(CommonJS 지양)
+- ESM 방식 사용(CommonJS 지양)
 
-    ```json
-    {
-      "name": "my-project",
-      "type": "module",
-      "scripts": {
-        "start": "node src/index.js"
-      }
+  ```json
+  {
+    "name": "my-project",
+    "type": "module",
+    "scripts": {
+      "start": "node src/index.js"
     }
-    ```
+  }
+  ```
+
+- 성공한 소스 복사 해오기
+  ```bash
+  cp -r gitignore/bk-성공작\ 만들기\ 중/projects/01-01-src/. ./src
+  ```
