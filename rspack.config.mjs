@@ -154,7 +154,14 @@ export default async (rspackEnv = {}, argv = {}) => {
 
                 filename: mf.filename,
 
-                library: mf.library,
+                library: mf.remoteFormat === 'module'
+                    ? {
+                        type: mf.env.remoteFormat,
+                    }
+                    : {
+                        type: mf.env.remoteFormat,
+                        name: mf.env.appName,
+                    },
 
                 exposes: mf.exposes,
 

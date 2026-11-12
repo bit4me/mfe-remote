@@ -14,11 +14,9 @@ export default Object.freeze({
     env,                        // 애플리케이션 환경변수
     name: env.appName,          // Module Federation 컨테이너 이름
     filename: env.entryName,    // 'remoteEntry.js',   // Remote Entry 파일명
+    varFilename: env.entryNameForViteVarBuild,    // VITE 빌드로 var 타입 빌드시 Entry 파일명
 
-    //library: {
-    //    type: env.remoteFormat,
-    //    name: env.appName
-    //},
+    remoteFormat: env.remoteFormat,
 
     shared,                       // React 등 공통 라이브러리
     exposes,                      // 외부 공개 컴포넌트

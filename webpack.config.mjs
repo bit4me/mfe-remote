@@ -58,7 +58,6 @@ export default async (webpackEnv = {}, argv = {}) => {
             //themeinjector: './src/components/ThemeInjector.tsx',    //<-- 01-02 용
 
             //app: './src/main.jsx',                                //  <-- 02-02 용
-
             //app: './src/main.jsx',                                //  <-- 03-02 용: 버튼 나옴
         },
         //entry: ['./src/components/ui/Button.tsx', './src/components/ThemeInjector.tsx'],//<-- 02-01 용
@@ -67,12 +66,10 @@ export default async (webpackEnv = {}, argv = {}) => {
         output: {
             publicPath: 'auto',
             uniqueName: mf.name,
-            clean: true
-        },
+            clean: true,
 
-        // ESM 출력 설정
-        experiments: {
-            outputModule: isModule
+            // ESM 출력 설정
+            module: isModule
         },
 
         // Development Server
@@ -97,8 +94,8 @@ export default async (webpackEnv = {}, argv = {}) => {
         module: {
             rules: [
                 {
-                    //test: /\.jsx?$/,
-                    test: /\.(j|t)sx?$/,
+                    // 1. JavaScript 및 JSX 설정
+                    test: /\.jsx?$/,
                     exclude: /node_modules/,
                     use: {
                         loader: 'babel-loader',
@@ -108,12 +105,46 @@ export default async (webpackEnv = {}, argv = {}) => {
                                 ['@babel/preset-react', {
                                     runtime: 'automatic',
                                     development: isDevelopment,
-                                }], // React 18+ 자동 런타임 대응
-                                '@babel/preset-typescript', // TypeScript(TSX) 컴파일 프리셋
-                            ]
-                        }
-                    }
+                                }],
+                            ],
+                        },
+                    },
                 },
+
+                // 2. TypeScript 및 TSX 설정
+                {
+                    test: /\.tsx?$/,
+                    exclude: /node_modules/,
+                    use: {
+                        loader: 'babel-loader',
+                        options: {
+                            presets: [
+                                '@babel/preset-env',
+                                ['@babel/preset-react', {
+                                    runtime: 'automatic',
+                                    development: isDevelopment,
+                                }],
+                                '@babel/preset-typescript',
+                            ],
+                        },
+                    },
+                },
+                ////test: /\.jsx?$/,
+                //test: /\.(j|t)sx?$/,
+                //exclude: /node_modules/,
+                //use: {
+                //    loader: 'babel-loader',
+                //    options: {
+                //        presets: [
+                //            '@babel/preset-env',
+                //            ['@babel/preset-react', {
+                //                runtime: 'automatic',
+                //                development: isDevelopment,
+                //            }], // React 18+ 자동 런타임 대응
+                //            '@babel/preset-typescript', // TypeScript(TSX) 컴파일 프리셋
+                //        ]
+                //    }
+                //}
                 {
                     test: /\.css$/,
                     use: [
@@ -132,7 +163,14 @@ export default async (webpackEnv = {}, argv = {}) => {
 
                 filename: mf.filename,
 
-                library: mf.library,
+                library: isModule
+                    ? {
+                        type: mf.env.remoteFormat,
+                    }
+                    : {
+                        type: mf.env.remoteFormat,
+                        name: mf.env.appName,
+                    },
 
                 exposes: mf.exposes,
 
@@ -141,9 +179,10 @@ export default async (webpackEnv = {}, argv = {}) => {
                 dts: mf.dts
             }),
 
-            new HtmlWebpackPlugin({
-                template: './src/index.html'
-            })
-        ]
+            //new HtmlWebpackPlugin({
+            //    template: './src/index.html'
+            //})
+        ],
+        stats: 'minimal', // 에러, 경고, 요약 정보만 간략하게 출력
     };
 };

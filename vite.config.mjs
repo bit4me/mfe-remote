@@ -51,9 +51,34 @@ export default defineConfig(async (env, argv) => {
   console.log('command:', env.command);
   console.log('envPath:', envPath);
   console.log('appName:', mf.name);
+  console.log('varName:', mf.varFilename);
   console.log('appPort:', mf.env.appPort);
   console.log('remoteFormat:', mf.env.remoteFormat);
   console.log('exposes:', exposes);
+
+
+  function federationRefreshPreamble() {
+    return {
+      name: 'federation-refresh-preamble',
+      enforce: 'pre',
+
+      transform(code, id) {
+        if (
+          id.includes('/src/components/') &&
+          id.endsWith('.jsx')
+        ) {
+          return {
+            code: `
+                import '/federation/refresh-preamble.js';
+                ${code}
+              `,
+            map: null
+          };
+        }
+      }
+    };
+  }
+
 
   // 6. Vite 설정
   return {
@@ -62,13 +87,30 @@ export default defineConfig(async (env, argv) => {
     base: '/',
 
     plugins: [
+
+      isDevelopment
+        ? [federationRefreshPreamble()]
+        : [],
+
       react(),
+
+      function federationReactRefreshPreamble() {
+        return {
+          name: 'federation-react-refresh-preamble',
+          enforce: 'pre',
+
+          transformIndexHtml() {
+            return [];
+          }
+        };
+      },
 
       tailwindcss(),
 
       federation({
         name: mf.name,
         filename: mf.filename,
+        varFilename: mf.varFilename,
         exposes,
         shared,
         dts: false

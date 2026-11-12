@@ -7,7 +7,7 @@ const required = (key, fallback = undefined) => {
 
     if (value === undefined || value === '') {
         throw new Error(
-            `[Federation] Missing environment variable: ${key}`
+            `[env.config] Missing environment variable: ${key}`
         );
     }
 
@@ -20,7 +20,7 @@ const numberValue = (key, fallback) => {
 
     if (!Number.isFinite(number) || number <= 0) {
         throw new Error(
-            `[Federation] Invalid number environment variable: ${key}=${value}`
+            `[env.config] Invalid number environment variable: ${key}=${value}`
         );
     }
 
@@ -31,7 +31,7 @@ const remoteFormat = required('REMOTE_FORMAT', 'var');
 
 if (!['module', 'var'].includes(remoteFormat)) {
     throw new Error(
-        '[Federation] REMOTE_FORMAT must be module or var'
+        '[env.config] REMOTE_FORMAT must be module or var'
     );
 }
 
@@ -43,9 +43,9 @@ export default Object.freeze({
 
     entryName: required('ENTRY_NAME', 'remoteEntry.js'),
 
-    remoteUrl: required('REMOTE_URL', 'http://localhost:5001'),
-    remoteFormat,
+    entryNameForViteVarBuild: required('ENTRY_NAME_FOR_VITE_VAR_BUILD', 'remoteEntry.esm.js'),
 
-    reactVersion: required('REACT_VERSION', '^18.3.1'),
-    reactDomVersion: required('REACT_DOM_VERSION', '^18.3.1')
+    remoteUrl: required('REMOTE_URL', 'http://localhost:5001'),
+
+    remoteFormat
 });
