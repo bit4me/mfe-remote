@@ -3,18 +3,13 @@ import env from './env.config.mjs';
 import shared from './shared.config.mjs';
 import exposes from './exposes.config.mjs';
 
-console.log('[Federation] Configuration:', {
-    appName: env.appName,
-    appPort: env.appPort,
-    remoteFormat: env.remoteFormat,
-    exposes: Object.keys(exposes)
-});
-
 export default Object.freeze({
     env,                        // 애플리케이션 환경변수
-    name: env.appName,          // Module Federation 컨테이너 이름
-    filename: env.entryName,    // 'remoteEntry.js',   // Remote Entry 파일명
-    varFilename: env.entryNameForViteVarBuild,    // VITE 빌드로 var 타입 빌드시 Entry 파일명
+
+    remoteContainerName: env.remoteContainerName,       // Module Federation 컨테이너 이름
+
+    entryName: env.entryName,    // 'remoteEntry.js',   // Remote Entry 파일명
+    entryNameForViteVarBuild: env.entryNameForViteVarBuild,    // VITE 빌드로 var 타입 빌드시 Entry 파일명
 
     remoteFormat: env.remoteFormat,
 

@@ -1,4 +1,3 @@
-
 // Node.js 및 환경변수 관련
 import dotenv from 'dotenv';
 import path from 'node:path';
@@ -15,72 +14,47 @@ import { federation } from '@module-federation/vite';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig(async (env, argv) => {
-
-  // 1. 실행 모드
   const mode = env.mode || 'development';
   const isDevelopment = mode === 'development';
 
-  // 2. 환경변수 파일 선택
+  // 1. 환경변수 파일 선택
   const envPath = path.resolve(
     __dirname,
     isDevelopment ? '.env.dev' : '.env'
   );
 
-  // 3. 환경변수 로드
+  // 2. 환경변수 로드
   const result = dotenv.config({
     path: envPath,
     override: true
   });
 
   if (result.error) {
-    throw new Error(
-      `[Vite] Environment loading failed: ${envPath}`
-    );
+    throw new Error(`[Vite] Environment loading failed: ${envPath}`);
   }
 
-  // 4. Federation 설정 로드
-  const { default: mf } = await import(
-    './federation/federation.config.mjs'
-  );
+  // 3. Federation 설정 로드
+  const { default: mf } = await import('./federation/federation.config.mjs');
 
   const { shared, exposes } = mf;
 
-  // 5. 실행 정보
-  console.log('[Vite Remote]');
-  console.log('mode:', mode);
-  console.log('command:', env.command);
-  console.log('envPath:', envPath);
-  console.log('appName:', mf.name);
-  console.log('varName:', mf.varFilename);
-  console.log('appPort:', mf.env.appPort);
-  console.log('remoteFormat:', mf.env.remoteFormat);
-  console.log('exposes:', exposes);
+  console.log('[Vite] Remote Configuration:', {
+    mode,
+    command: mf.env.command,
 
+    remoteContainerName: mf.remoteContainerName,                   // Module Federation 컨테이너 이름
 
-  function federationRefreshPreamble() {
-    return {
-      name: 'federation-refresh-preamble',
-      enforce: 'pre',
+    entryName: mf.entryName,        // Remote Entry 파일명
+    entryNameForViteVarBuild: mf.entryNameForViteVarBuild,  // Remote Entry 파일명 (Vite 의 var 타입)
 
-      transform(code, id) {
-        if (
-          id.includes('/src/components/') &&
-          id.endsWith('.jsx')
-        ) {
-          return {
-            code: `
-                import '/federation/refresh-preamble.js';
-                ${code}
-              `,
-            map: null
-          };
-        }
-      }
-    };
-  }
+    remoteFormat: mf.remoteFormat,      // Remote 노출 방식
 
+    exposes: mf.exposes,
 
-  // 6. Vite 설정
+    appPort: mf.env.appPort,
+  });
+
+  // 4. Vite 설정
   return {
     root: __dirname,
 
@@ -88,9 +62,8 @@ export default defineConfig(async (env, argv) => {
 
     plugins: [
 
-      isDevelopment
-        ? [federationRefreshPreamble()]
-        : [],
+      //...(isDevelopment ? [federationRefreshPreamble()] : []),
+      isDevelopment && federationRefreshPreamble(),
 
       react(),
 
@@ -108,14 +81,14 @@ export default defineConfig(async (env, argv) => {
       tailwindcss(),
 
       federation({
-        name: mf.name,
-        filename: mf.filename,
-        varFilename: mf.varFilename,
+        name: mf.remoteContainerName,
+        filename: mf.entryName,
+        varFilename: mf.entryNameForViteVarBuild, //  vite는 varFilename만 있으면 var 타입 무조건 빌드뎀.
         exposes,
         shared,
         dts: false
       })
-    ],
+    ].filter(Boolean),
 
     server: {
       host: '0.0.0.0',
@@ -135,3 +108,26 @@ export default defineConfig(async (env, argv) => {
     }
   };
 });
+
+// Federation Refresh Preamble Plugin
+function federationRefreshPreamble() {
+  return {
+    name: 'federation-refresh-preamble',
+    enforce: 'pre',
+
+    transform(code, id) {
+      if (
+        id.includes('/src/components/') &&
+        id.endsWith('.jsx')
+      ) {
+        return {
+          code: `
+                import '/federation/refresh-preamble.js';
+                ${code}
+              `,
+          map: null
+        };
+      }
+    }
+  };
+}
