@@ -1,0 +1,169 @@
+{
+    //  ------------------------------------------------------------
+    //  ---------------- 처음 설정 시 작성할 부분 - 시작 ---------------
+    //  ------------------------------------------------------------
+
+    //// 컨테이너 내부에 상시 적용할 환경변수 등록
+    //"containerEnv": {
+    //  "MY_VARIABLE": "some_value",
+    //  "DB_HOST": "localhost"
+    //}
+    
+    // VS Code에 표시할 개발 컨테이너 이름
+    "name": "mfe-framework",
+    
+    // 컨테이너 내부에서 VS Code가 열 프로젝트 경로
+    // docker-compose.yml의 volumes.target과 동일하게 설정한다.
+    "workspaceFolder": "/workspaces/mfe-framework/mfe-remote",
+
+    // docker-compose.yml에 정의한 개발 서비스 이름
+    "service": "mfe-remote",
+
+    // [차이점] 프론트엔드 개발 시에는 무거운 백엔드 컨테이너는 끄고, 
+    // 내 서버(mfe-remote)와 데이터베이스(db)만 효율적으로 가동합니다.
+    "runServices": [
+      //"backend",
+      //"db",
+      "mfe-remote"
+    ],
+    
+    "forwardPorts": [
+        //5003,
+        5001
+    ],
+
+    "portsAttributes": {
+        "5001": {
+            "label": "5001",
+            "onAutoForward": "notify",
+            "protocol": "http"
+        },
+        //"5003": {
+        //    "label": "5003",
+        //    "onAutoForward": "notify",
+        //    "protocol": "http"
+        //}
+    },
+
+    //  ------------------------------------------------------------
+    //  ---------------- 처음 설정 시 작성할 부분 - 끝 -----------------
+    //  ------------------------------------------------------------
+
+
+    // 컨테이너 내부 보안 계정 설정
+    "remoteUser": "node",
+    //"remoteUser": "root",
+
+    // 💡 SSH Agent 공유 안정성을 위해 컨테이너 내부의 환경 변수를 한 번 더 확정합니다.
+    "remoteEnv": {
+        "SSH_AUTH_SOCK": "/ssh-agent"
+    },
+
+    
+    // Docker Compose 설정 파일 경로.
+    // devcontainer.json은 .devcontainer 폴더 안에 있으므로 ../로 이동한다.
+    "dockerComposeFile": [
+    "../docker-compose.yml",
+    "../docker-compose.dev.yml"
+    ],
+
+    //// 마찬가지로 최상위 루트를 마운트하여 infra/ 폴더 내 설정을 읽을 수 있도록 합니다.
+    //"workspaceMount": "source=${localWorkspaceFolder}/..,target=/workspaces,type=bind,consistency=cached",
+
+    // ⭐️ [이 설정을 추가합니다] 
+    // 컨테이너 내부의 /workspaces/backend 경로를 호스트와 연결되지 않은 독립 볼륨으로 덮어씁니다.
+    //• ${localWorkspaceFolder}: 내 컴퓨터(호스트)에서 열려 있는 현재 폴더 경로
+    //• ${localWorkspaceFolderBasename}: 현재 열려 있는 폴더 이름 (예: backend)
+    //• ${containerWorkspaceFolder}: 컨테이너 내부의 기본 작업 공간 경로
+    "mounts": [
+      // 1. 최상위 루트 전체를 컨테이너의 /workspaces에 마운트
+      "source=${localWorkspaceFolder},target=/workspaces/mfe-framework/mfe-remote,type=bind",
+      //"source=frontend-devcontainer-hide,target=/workspaces/MarqueeTicker/.devcontainer,type=volume",
+      //"source=frontend-arch-gen-scripts-hide,target=/workspaces/MarqueeTicker/arch-gen-scripts,type=volume",  
+      //"source=frontend-backend-hide,target=/workspaces/MarqueeTicker/backend,type=volume"
+      "source=${localWorkspaceFolder}/../cattle-station/homestead/mfe-framework/docs,target=/workspaces/mfe-framework/mfe-remote/gitignore/homestead-mfe-framework-docs,type=bind",
+    ],
+
+    // 컨테이너가 처음 실행될 때 로컬 소스 파일을 볼륨 내부로 자동 복사/동기화하도록 설정
+    "updateRemoteUserUID": true,
+    
+    "features": {
+        // 🌟 개발용 필수 유틸(git, curl, wget, openssh-client, ca-certificates, SSH 클라이언트 등)을 자동으로 넣어주는 기능을 추가합니다.
+        "ghcr.io/devcontainers/features/common-utils:2.7.1": {
+            "installZsh": false,
+            "configureZshAsDefaultShell": false
+        },
+        // 위의 것으로 갈음됨.
+        //호스트의 Git 자격 증명을 컨테이너와 동기화 (원격 저장소 권한 획득)
+        //"ghcr.io/devcontainers/features/git:1": {
+        //"version": "latest"
+        //}
+    },
+
+    // false (기본값): 개발 환경(컨테이너)이 띄워질 때, 도구가 내부적으로 생성하는 기본 명령어나 엔트리포인트를 덮어쓰지 않고 그대로 유지한 채 백그라운드에서 컨테이너가 계속 실행되도록 합니다.
+    // true: 사용자가 지정한 커스텀 명령어(command 옵션 등)로 기존 구동 명령을 완전히 대체합니다. 명령어 실행이 끝나면 컨테이너가 즉시 종료될 수 있습니다.
+    "overrideCommand": true,
+
+    // VS Code 연결이 종료되면 Compose 서비스를 중지한다.
+    // 컨테이너를 계속 실행하고 싶다면 "none"으로 변경할 수 있다.
+    "shutdownAction": "stopCompose",
+
+    "postCreateCommand": {
+        // Git 필수 사용자 정보 등록 (컨테이너 내부 전역 설정)
+        "git-name": "git config --global user.name bit4me && git config --global user.email bit4world@gmail.com",
+
+        //// Git 커밋 템플릿 적용 -> 'scm4devcontainer' 프로젝트에서 참조 후 진행 절차로 변경
+        //"git-template": "git config --local commit.template .gitmessage.txt"
+
+        // 의존성 설치
+        // [수정] 실행 전 현재 작업 디렉토리의 소유권을 node 유저에게 강제로 부여한 뒤 npm install을 수행합니다.
+        "npm-setup":"sudo chown -R node:node /workspaces && npm config set fetch-timeout 120000 && npm config set fetch-retries 5"// && npm install" //  && npm run build && npm run typecheck"// && npm run demo -- --host 0.0.0.0"
+        // npm run dev -- --hostname 0.0.0.0
+    },
+    
+    //"postStartCommand": "npm run dev:vite"
+    //"postStartCommand": "python -m app.main",
+
+	// Vite 실행: npm run dev:vite
+	// Webpack 실행: npm run dev:webpack
+	// Rspack 실행: npm run dev:rspack
+
+    
+    // 6. 프론트엔드 개발 전용 VS Code 필수 익스텐션 목록입니다.
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "bradlc.vscode-tailwindcss",
+                "ms-azuretools.vscode-docker",
+                
+                "dsznajder.es7-react-js-snippets",
+                
+                "dbaeumer.vscode-eslint",
+                "esbenp.prettier-vscode",
+
+                "redhat.vscode-yaml",   // *.yml 문법 하이라이팅과 자동완성
+                "gitHub.vscode-github-actions",
+
+                "mhutchie.git-graph",       // Git 히스토리 시각화 (서브트리 커밋 추적에 유용)
+                "eamodio.gitlens"           // 강력한 Git 추적 도구
+            ],
+            // VS Code 편집기 기본 설정
+            "settings": {
+                "git.enabled": true,                  // VS Code 내부 Git 감지 끄기
+                "git.autoRepositoryDetection": true,  // 자동으로 저장소 찾는 기능 끄기
+                "git.commitTemplate": "/workspaces/mfe-framework/mfe-remote/.gitmessage.txt",    // 컨테이너 내부에서는 프로젝트 루트가 보통 /workspaces/[프로젝트명] 입니다.
+                                                                                // 또는 고정된 컨테이너 작업 경로 기준의 상대 경로로 지정합니다.
+                                                                                
+                "terminal.integrated.cwd": "/workspaces/mfe-framework/mfe-remote", //  vscode 터미널 시작 위치
+
+                "editor.formatOnSave": true,    // 파일 저장 시 자동 포맷을 실행한다.
+                
+                "eslint.workingDirectories": [
+                    "/workspaces/mfe-framework/mfe-remote"
+                ],
+
+                "js/ts.tsdk.path": "/workspaces/mfe-framework/mfe-remote/node_modules/typescript/lib"
+            }
+        }
+    }
+}
