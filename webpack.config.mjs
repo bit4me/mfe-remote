@@ -114,6 +114,15 @@ export default async (webpackEnv = {}, argv = {}) => {
                         name: mf.remoteContainerName,
                     },
 
+                //  webpack / rspack은 기본이 var 타입이라.
+                //  별도 library 설정을 안해도됨.
+                //  단지 vite 쪽에서 확인을 못해서 그냥 둠
+                //...(isModule && {
+                //    library: {
+                //        type: 'module',
+                //    },
+                //}),
+
                 exposes: mf.exposes,
 
                 shared: mf.shared,
