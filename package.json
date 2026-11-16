@@ -1,0 +1,62 @@
+{
+  "name": "micro-front-end-remote",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "npm run dev:vite",
+    "dev:webpack": "webpack serve --config webpack.config.mjs --mode development",
+    "dev:rspack": "rspack serve --config rspack.config.mjs --mode development",
+    "dev:vite": "vite --config vite.config.mjs --mode development",
+    "build:webpack": "webpack --config webpack.config.mjs --mode production",
+    "build:rspack": "rspack build --config rspack.config.mjs --mode production",
+    "build:vite": "vite build --config vite.config.mjs --mode production",
+    "preview:vite": "vite preview --config vite.config.mjs --host 0.0.0.0"
+  },
+  "dependencies": {
+    "@module-federation/enhanced": "^2.9.3",
+    "@module-federation/vite": "^1.23.11",
+    "@radix-ui/react-slot": "^1.1.0",
+    "clsx": "^2.1.1",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "tailwind-merge": "^2.5.4"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.29.13",
+    "@babel/preset-env": "^7.29.7",
+    "@babel/preset-react": "^7.29.7",
+    "@babel/preset-typescript": "^7.23.3",
+    "@rspack/cli": "^1.7.12",
+    "@rspack/core": "^1.7.12",
+    "@rspack/dev-server": "^1.2.1",
+    "@types/node": "^22.7.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "@vitejs/plugin-react": "^4.7.0",
+    "@tailwindcss/postcss": "latest",
+    "@tailwindcss/vite": "latest",
+    "autoprefixer": "^10.4.20",
+    "babel-loader": "^9.2.1",
+    "css-loader": "6.11.0",
+    "dotenv": "^16.4.5",
+    "dotenv-webpack": "^8.1.0",
+    "esbuild": "^0.25.12",
+    "html-webpack-plugin": "^5.6.8",
+    "postcss": "^8.4.47",
+    "postcss-loader": "^8.1.1",
+    "style-loader": "^3.3.4",
+    "tailwindcss": "^4.3.5",
+    "typescript": "^5.6.2",
+    "vite": "^6.4.6",
+    "webpack": "5.111.1",
+    "webpack-cli": "^5.1.4",
+    "webpack-dev-server": "^5.2.7"
+  },
+  "overrides": {
+    "esbuild": "^0.25.12",
+    "sockjs": {
+      "uuid": "^11.1.1"
+    },
+    "webpack-dev-server": "^5.2.7"
+  }
+}

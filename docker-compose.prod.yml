@@ -1,0 +1,32 @@
+#name: mfe-framework
+#
+#services:
+#  remote-app:
+#    # 빌드한 이미지에 지정할 이름과 태그: 로컬 개발용 이미지임을 구분하기 위해 local 태그 사용
+#    image: node:24-alpine
+#
+#    #env_file:
+#    #  - ../.env
+#    ##container_name: kstock-frontend${ENV_SUFFIX}
+#
+#
+#
+#
+#
+#    build:
+#        context: .
+#
+#        dockerfile: Dockerfile
+#
+#    ports:
+#    - "5001:5001"
+#    
+#    volumes:
+#    - .:/app
+#    - /app/node_modules
+#
+#    env_file:
+#    - .env.dev
+#
+#    environment:
+#    - NODE_ENV=development
