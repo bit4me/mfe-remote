@@ -62,12 +62,12 @@ export default async (webpackEnv = {}, argv = {}) => {
         // 번들러 진입점.
         //entry: {}, //<-- 독립 실행용 entry 없음.
         entry: {
-            //app: './src/index.jsx',                                //  테스트
+            //app: './src/main.jsx',                                //  테스트
             //button: './src/components/Button.tsx',               //<-- 01-02 용
             //themeinjector: './src/components/ThemeInjector.tsx',    //<-- 01-02 용
 
             //app: './src/main.jsx',                                //  <-- 02-02 용
-            //app: './src/main.jsx',                                //  <-- 03-02 용: 버튼 나옴
+            app: './src/main.jsx',                                //  <-- 03-02 용: 버튼 나옴
         },
         //entry: ['./src/components/ui/Button.tsx', './src/components/ThemeInjector.tsx'],//<-- 02-01 용
 

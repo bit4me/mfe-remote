@@ -1,0 +1,206 @@
+/* src/Ticker/Ticker.css */
+
+/* 전체 레이아웃 정렬 */
+.ticker-container {
+  width: 100%;
+  font-family: -apple-system, BlinkMacSystemFont, "Malgun Gothic", "맑은 고딕", helvetica, sans-serif;
+  background-color: #ffffff;
+  padding: 4px 0 0 0; /* 컨트롤러와의 상단 간격만 최소 확보 */
+  border-top: 1px solid #e5e5e5;
+  border-bottom: 1px solid #e5e5e5;
+}
+
+/* 상단 컨트롤러 조절 영역 */
+.ticker-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 16px 4px 16px;
+  font-size: 11px;
+  color: #666666;
+  border-bottom: 1px dashed #e5e5e5;
+  margin-bottom: 4px;
+}
+
+.controls-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.mode-selection {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.mode-selection label {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+}
+
+.mode-selection input[type="radio"] {
+  accent-color: #00c73c;
+  cursor: pointer;
+}
+
+.slider-box {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.slider-box input[type="range"] {
+  accent-color: #00c73c;
+  cursor: pointer;
+  height: 3px;
+}
+
+/* 💡 네이버 띠 배너 높이 타겟팅 (상하 패딩 축소) */
+.IndexTicker_marquee-wrap {
+  width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  display: flex;
+  position: relative;
+  background-color: #f9fafb;
+  padding: 6px 0; /* 6px로 패딩을 대폭 낮춰 슬림한 높이를 만듭니다 */
+  height: 20px;   /* 내부 콘텐츠 높이 고정 */
+}
+
+.IndexTicker_marquee-content {
+  display: flex;
+  align-items: center;
+  gap: 0px;
+  will-change: transform;
+}
+
+/* 개별 주가 리스트 아이템 디자인 */
+.ticker-item {
+  display: flex;
+  align-items: center;
+  padding: 0 20px; /* 양옆 간격 콤팩트화 */
+  font-size: 12px;  /* 폰트 크기를 살짝 낮춤 */
+  letter-spacing: -0.5px;
+  color: #111111;
+  cursor: pointer;
+  position: relative;
+  height: 100%;
+  line-height: 20px;
+}
+
+/* 종목 사이의 수직 분할선 (|) 높이 축소 */
+.ticker-item::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 1px;
+  height: 10px; /* 분할선 높이도 짧게 조정 */
+  background-color: #e2e5e8;
+}
+
+.ticker-item:hover {
+  background-color: #f1f3f5;
+}
+
+.ticker-name {
+  font-weight: bold;
+  color: #333333;
+  margin-right: 8px;
+}
+
+.ticker-price {
+  font-weight: 500;
+  margin-right: 6px;
+}
+
+/* 상승/하락 컬러셋 */
+.ticker-item.up-card .ticker-price,
+.ticker-item.up-card .ticker-change {
+  color: #e52528;
+}
+
+.ticker-item.down-card .ticker-price,
+.ticker-item.down-card .ticker-change {
+  color: #0064ff;
+}
+
+.ticker-change {
+  font-size: 11px;
+}
+
+/* 네이버 스타일 미니 팝업창 (Modal) */
+.ticker-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.ticker-modal-content {
+  background-color: #ffffff;
+  border: 1px solid #b3b3b3;
+  border-radius: 0px;
+  padding: 20px;
+  width: 300px;
+  color: #333333;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+.ticker-modal-content h3 {
+  margin-top: 0;
+  font-size: 16px;
+  color: #111111;
+  border-bottom: 2px solid #111111;
+  padding-bottom: 8px;
+  text-align: left;
+}
+
+.modal-info-row {
+  display: flex;
+  justify-content: space-between;
+  margin: 14px 0;
+  font-size: 14px;
+}
+
+.modal-info-row span {
+  color: #666666;
+}
+
+.text-up { color: #e52528; font-weight: bold; }
+.text-down { color: #0064ff; font-weight: bold; }
+
+.modal-desc {
+  font-size: 11px;
+  color: #999999;
+  text-align: left;
+  line-height: 1.5;
+  background-color: #f9f9f9;
+  padding: 8px;
+  border: 1px solid #eaeaea;
+}
+
+.modal-close-btn {
+  background-color: #ffffff;
+  color: #333333;
+  border: 1px solid #ccc;
+  padding: 6px 0;
+  margin-top: 12px;
+  cursor: pointer;
+  width: 100%;
+  font-size: 12px;
+}
+
+.modal-close-btn:hover {
+  background-color: #f5f5f5;
+}
